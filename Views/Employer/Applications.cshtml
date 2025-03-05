@@ -1,0 +1,59 @@
+﻿@model List<JobPortal.Models.Application>
+@{
+    ViewData["Title"] = "Manage Applications";
+}
+
+<div class="container mt-4">
+    <h2>Manage Applications</h2>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Applicant</th>
+                        <th>Applied Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var app in Model)
+                    {
+                        <tr>
+                            <td>@app.Job.Title</td>
+                            <td>@app.User.Username</td>
+                            <td>@app.AppliedDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <span class="badge @(app.Status switch {
+                                    "Approved" => "bg-success",
+                                    "Rejected" => "bg-danger",
+                                    _ => "bg-warning"
+                                })">
+                                    @app.Status
+                                </span>
+                            </td>
+                            <td>
+                                <form asp-action="UpdateStatus" method="post">
+                                    <input type="hidden" name="applicationId" value="@app.Id" />
+                                    <select name="status" class="form-select">
+                                        <option value="Pending">Pending</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Rejected">Rejected</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">No applications found</div>
+    }
+</div>

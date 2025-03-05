@@ -1,0 +1,12 @@
+﻿@model JobPortal.Models.PaginationViewModel
+
+<nav aria-label="Job list pagination">
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

@@ -1,0 +1,52 @@
+﻿@model List<JobPortal.Models.Job>
+
+<div class="manage-jobs">
+    <h2>Manage Jobs</h2>
+    <div class="job-list">
+        @foreach (var job in Model)
+        {
+            <div class="job-card">
+                <div class="job-header">
+                    <h3>@job.Title</h3>
+                    <div class="actions">
+                        <a asp-action="Edit" asp-controller="Job" asp-route-id="@job.Id" class="btn">Edit</a>
+                        @* Only show the Approve button if the job is not approved and the current user is an Admin *@
+                        @if (!job.IsApproved && User.IsInRole("Admin"))
+                        {
+                            <form asp-action="Approve" asp-controller="Job" asp-route-id="@job.Id" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success">Approve</button>
+                            </form>
+                        }
+                        <form asp-action="DeleteConfirmed" asp-controller="Job" asp-route-id="@job.Id" method="post"
+                              onsubmit="return confirm('Are you sure you want to delete this job?');"
+                              style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                <p>@job.Employer?.CompanyName • @job.Location</p>
+                <p>Applications: @job.Applications?.Count</p>
+                @if (!job.IsApproved)
+                {
+                    <p class="pending">Pending Approval</p>
+                }
+            </div>
+        }
+    </div>
+
+    <a asp-action="Create" asp-controller="Job" class="btn btn-success">Create New Job</a>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.btn-danger').forEach(button => {
+             button.addEventListener('click', function(e) {
+                 if (!confirm('Are you sure you want to delete this job?')) {
+                     e.preventDefault();
+                 }
+             });
+         });
+    </script>
+}

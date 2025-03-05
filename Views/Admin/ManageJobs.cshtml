@@ -1,0 +1,38 @@
+﻿@model JobPortal.Models.PaginationViewModel
+@{
+    ViewData["Title"] = "Manage Jobs";
+}
+
+<div class="container mt-4">
+    <h2>Manage Jobs (Admin)</h2>
+
+    @if (Model.Jobs.Any())
+    {
+        foreach (var job in Model.Jobs)
+        {
+            <div class="job-card border p-3 mb-3">
+                <h4>@job.Title</h4>
+                <p>Company: @job.Employer.CompanyName</p>
+                <p>Posted: @job.PostedDate.ToString("MMM dd, yyyy")</p>
+                <p>Status: @(job.IsApproved ? "Approved" : "Pending")</p>
+                <a asp-controller="Job" asp-action="Edit" asp-route-id="@job.Id" class="btn btn-primary">Edit</a>
+                <a asp-controller="Job" asp-action="Delete" asp-route-id="@job.Id" class="btn btn-danger">Delete</a>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info">No jobs found.</div>
+    }
+
+    <nav aria-label="Jobs pagination">
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("ManageJobs", new { page = i })">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>

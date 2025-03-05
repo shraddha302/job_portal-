@@ -1,0 +1,87 @@
+﻿@model JobPortal.Models.ViewModels.RegisterViewModel
+
+<div class="container mt-4">
+    <h2>Register</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Register" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <!-- Role Selection -->
+                <div class="form-group mb-4">
+                    <label>Register as:</label>
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn btn-outline-primary active" id="userRoleBtn">Job Seeker</button>
+                        <button type="button" class="btn btn-outline-primary" id="employerRoleBtn">Employer</button>
+                    </div>
+                    <input type="hidden" id="selectedRole" name="role" value="user">
+                </div>
+
+                <!-- Common Fields -->
+                <div class="form-group mb-3">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Username"></label>
+                    <input asp-for="Username" class="form-control">
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" type="password" class="form-control">
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <!-- Employer Fields (Hidden by Default) -->
+                <div id="employerFields" style="display: none;">
+                    <div class="form-group mb-3">
+                        <label asp-for="CompanyName"></label>
+                        <input asp-for="CompanyName" class="form-control">
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Description"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="ContactInfo"></label>
+                        <input asp-for="ContactInfo" class="form-control">
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Logo">Company Logo</label>
+                        <input type="file" asp-for="Logo" class="form-control">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Register</button>
+            </form>
+        </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userBtn = document.getElementById('userRoleBtn');
+            const employerBtn = document.getElementById('employerRoleBtn');
+            const employerFields = document.getElementById('employerFields');
+            const roleInput = document.getElementById('selectedRole');
+
+            function toggleRole(isEmployer) {
+                userBtn.classList.toggle('active', !isEmployer);
+                employerBtn.classList.toggle('active', isEmployer);
+                employerFields.style.display = isEmployer ? 'block' : 'none';
+                roleInput.value = isEmployer ? 'employer' : 'user';
+            }
+
+            userBtn.addEventListener('click', () => toggleRole(false));
+            employerBtn.addEventListener('click', () => toggleRole(true));
+        });
+    </script>
+
+}

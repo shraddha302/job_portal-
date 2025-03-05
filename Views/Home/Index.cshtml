@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="hero-section">
+    <div class="hero-content">
+        <h1>Find Your Dream Job</h1>
+        <p class="lead">Mass People Oriented Software Platform</p>
+        <div class="cta-buttons">
+            <a href="/Job" class="btn btn-light">Browse Jobs</a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a href="/Job/Create" class="btn btn-outline-light">Post a Job</a>
+            }
+            @if (User.IsInRole("Employer"))
+            {
+                <a href="/Employer/Profile" class="btn btn-outline-light">Employer Profile</a>
+            }
+        </div>
+    </div>
+</div>
+

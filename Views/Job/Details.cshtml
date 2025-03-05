@@ -1,0 +1,71 @@
+﻿@model JobPortal.Models.Job
+
+@{
+	ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-4">
+	<div class="card shadow-sm">
+		<div class="card-body">
+			<h1 class="card-title">@Model.Title</h1>
+			<div class="mb-3">
+				<strong>Company:</strong> @Model.Company
+			</div>
+			<div class="mb-3">
+				@if (!string.IsNullOrEmpty(Model.CompanyLogoUrl))
+				{
+					<img src="@Model.CompanyLogoUrl" alt="@Model.Company logo" style="max-width:150px;" />
+				}
+			</div>
+			<div class="mb-3">
+				<strong>Location:</strong> @Model.Location
+			</div>
+			<div class="mb-3">
+				<strong>Type:</strong> @Model.Type
+			</div>
+			<div class="mb-3">
+				<strong>Salary:</strong> @Model.Salary
+			</div>
+			<div class="mb-3">
+				<strong>Description:</strong>
+				<p>@Html.Raw(Model.Description.Replace("\n", "<br />"))</p>
+			</div>
+			<div class="mb-3">
+				<strong>Posted:</strong> @Model.PostedDate.ToString("dd MMM yyyy")
+			</div>
+			@if (User.IsInRole("Admin,Employer"))
+			{
+
+				<div class="mb-3">
+					<strong>Status:</strong> @(Model.IsApproved ? "Approved" : "Pending")
+			</div>
+			}
+			@* Show Apply button only for Users *@
+			@if (User.IsInRole("User"))
+			{
+				<form asp-action="Apply" method="post">
+					<input type="hidden" name="jobId" value="@Model.Id" />
+				</form>
+				<form asp-action="Apply" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="jobId" value="@Model.Id" />
+					<div class="form-group">
+						<label for="cv">Upload your CV:</label>
+						<input type="file" name="cv" id="cv" class="form-control" />
+					</div>
+					@Html.AntiForgeryToken()
+					<button type="submit" class="btn btn-success">Apply</button>
+				</form>
+
+			}
+
+			@* Show Edit and Delete buttons only for Admins and Employers *@
+			@if (User.IsInRole("Admin") || User.IsInRole("Employer"))
+			{
+				<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+				<a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+			}
+
+			<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+		</div>
+	</div>
+</div>

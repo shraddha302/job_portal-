@@ -1,0 +1,82 @@
+﻿@model JobPortal.Models.ViewModels.ApplicationPaginationViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-4">
+    <h2>Admin Dashboard</h2>
+    <div class="card">
+        <div class="card-header">
+            Pending Applications (@Model.TotalItems)
+        </div>
+        <div class="card-body">
+            @if (Model.Applications.Any())
+            {
+                foreach (var app in Model.Applications)
+                {
+                    <div class="mb-3 p-3 border rounded">
+                        <h5>@app.Job.Title</h5>
+                        <p class="mb-1">Applicant: @app.User.Username</p>
+                        <p class="mb-1">Applied: @app.AppliedDate.ToString("MMM dd, yyyy")</p>
+                        <p class="mb-1">Current Status: @app.Status</p>
+                        <p class="mb-1">
+                            @if (!string.IsNullOrEmpty(app.CVFileName))
+                            {
+                                <a asp-action="DownloadCV" asp-route-applicationId="@app.Id">Download CV</a>
+                            }
+                            else
+                            {
+                                <span>No CV Uploaded</span>
+                            }
+                        </p>
+                        <form asp-action="ReviewApplication" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="applicationId" value="@app.Id" />
+                            <select name="status" class="form-control">
+                                @if (app.Status == "Pending")
+                                {
+                                    <option value="Pending" selected>Pending</option>
+                                }
+                                else
+                                {
+                                    <option value="Pending">Pending</option>
+                                }
+                                @if (app.Status == "Accepted")
+                                {
+                                    <option value="Accepted" selected>Accepted</option>
+                                }
+                                else
+                                {
+                                    <option value="Accepted">Accepted</option>
+                                }
+                                @if (app.Status == "Rejected")
+                                {
+                                    <option value="Rejected" selected>Rejected</option>
+                                }
+                                else
+                                {
+                                    <option value="Rejected">Rejected</option>
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary mt-1">Update</button>
+                        </form>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-info">No pending applications</div>
+            }
+        </div>
+    </div>
+    <nav aria-label="Applications pagination">
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Dashboard", new { page = i })">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>

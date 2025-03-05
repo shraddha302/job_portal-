@@ -1,0 +1,24 @@
+﻿@model JobPortal.Models.Job
+
+@{
+    ViewData["Title"] = "Delete Job";
+}
+
+<div class="container mt-4">
+    <h2>Delete Job</h2>
+    <p>Are you sure you want to delete this job?</p>
+
+    <div>
+        <h3>@Html.DisplayFor(model => model.Title)</h3>
+        <p><strong>Company:</strong> @Html.DisplayFor(model => model.Company)</p>
+        <p><strong>Location:</strong> @Html.DisplayFor(model => model.Location)</p>
+        <p><strong>Type:</strong> @Html.DisplayFor(model => model.Type)</p>
+    </div>
+
+    <form asp-action="DeleteConfirmed" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
